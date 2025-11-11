@@ -13,7 +13,7 @@ import platform
 from pathlib import Path
 from typing import Optional
 
-from .core import DB, iter_media, Job, process, ensure_base_structure
+from .core import DB, iter_media, Job, process, ensure_base_structure, clear_memory
 
 try:
     # Prefer PyQt6, fallback to PyQt5
@@ -128,6 +128,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle('Sample Library Organizer')
         self.setMinimumSize(840, 560)
         self._worker: Optional[Worker] = None
+        self.clear_cache_before_run = False
 
         central = QtWidgets.QWidget(self)
         self.setCentralWidget(central)
@@ -162,7 +163,7 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addWidget(self.tag_chk, 5, 0, 1, 2)
         layout.addWidget(self.fast_chk, 6, 0, 1, 2)
 
-        # Buttons
+    # Buttons
         self.start_btn = QtWidgets.QPushButton('Start')
         self.stop_btn = QtWidgets.QPushButton('Stop')
         self.stop_btn.setEnabled(False)
@@ -188,6 +189,121 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log.setLineWrapMode(QtWidgets.QPlainTextEdit.LineWrapMode.WidgetWidth)
         layout.addWidget(self.log, 9, 0, 1, 3)
 
+        # Menus (macOS menu bar friendly)
+        self._build_menus()
+
+    def _build_menus(self) -> None:
+        mb = self.menuBar()
+        # Application menu (on macOS, this appears under the app name)
+        app_menu = mb.addMenu('&Application')
+        act_prefs = QtWidgets.QAction('Preferences…', self)
+        try:
+            act_prefs.setShortcut(QtGui.QKeySequence.StandardKey.Preferences)
+        except Exception:
+            act_prefs.setShortcut('Ctrl+,')
+        act_prefs.triggered.connect(self._open_prefs)
+
+        self.act_clear_before = QtWidgets.QAction('Clear cache before run', self, checkable=True)
+        self.act_clear_before.toggled.connect(self._toggle_clear_before)
+
+        act_clear_now = QtWidgets.QAction('Clear Cache Now…', self)
+        act_clear_now.setShortcut('Ctrl+Shift+Backspace')
+        act_clear_now.triggered.connect(self._clear_cache_now)
+
+        act_quit = QtWidgets.QAction('Quit', self)
+        try:
+            act_quit.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
+        except Exception:
+            act_quit.setShortcut('Ctrl+Q')
+        act_quit.triggered.connect(QtWidgets.QApplication.instance().quit)
+
+        app_menu.addAction(act_prefs)
+        app_menu.addSeparator()
+        app_menu.addAction(self.act_clear_before)
+        app_menu.addAction(act_clear_now)
+        app_menu.addSeparator()
+        app_menu.addAction(act_quit)
+
+        # File menu
+        file_menu = mb.addMenu('&File')
+        act_start = QtWidgets.QAction('Start', self)
+        act_start.setShortcut('Ctrl+R')
+        act_start.triggered.connect(self._start)
+        act_stop = QtWidgets.QAction('Stop', self)
+        act_stop.setShortcut('Ctrl+S')
+        act_stop.triggered.connect(self._stop)
+        file_menu.addAction(act_start)
+        file_menu.addAction(act_stop)
+
+        # View/Options menu
+        view_menu = mb.addMenu('&Options')
+        self.act_opt_dry = QtWidgets.QAction('Dry run (no files copied)', self, checkable=True)
+        self.act_opt_dry.setChecked(True)
+        self.act_opt_dry.toggled.connect(self.dry_chk.setChecked)
+        self.dry_chk.toggled.connect(self.act_opt_dry.setChecked)
+
+        self.act_opt_tag = QtWidgets.QAction('Tag source pack name', self, checkable=True)
+        self.act_opt_tag.setChecked(False)
+        self.act_opt_tag.toggled.connect(self.tag_chk.setChecked)
+        self.tag_chk.toggled.connect(self.act_opt_tag.setChecked)
+
+        self.act_opt_fast = QtWidgets.QAction('Fast mode (skip deep analysis)', self, checkable=True)
+        self.act_opt_fast.setChecked(True)
+        self.act_opt_fast.toggled.connect(self.fast_chk.setChecked)
+        self.fast_chk.toggled.connect(self.act_opt_fast.setChecked)
+
+        view_menu.addAction(self.act_opt_dry)
+        view_menu.addAction(self.act_opt_tag)
+        view_menu.addAction(self.act_opt_fast)
+
+        # Help menu
+        help_menu = mb.addMenu('&Help')
+        act_about = QtWidgets.QAction('About', self)
+        act_about.triggered.connect(self._show_about)
+        help_menu.addAction(act_about)
+
+    def _open_prefs(self) -> None:
+        # Simple preferences dialog to mirror options
+        dlg = QtWidgets.QDialog(self)
+        dlg.setWindowTitle('Preferences')
+        lay = QtWidgets.QFormLayout(dlg)
+        cb_dry = QtWidgets.QCheckBox('Dry run (no files copied)')
+        cb_dry.setChecked(self.dry_chk.isChecked())
+        cb_tag = QtWidgets.QCheckBox('Tag source pack name')
+        cb_tag.setChecked(self.tag_chk.isChecked())
+        cb_fast = QtWidgets.QCheckBox('Fast mode (skip deep analysis)')
+        cb_fast.setChecked(self.fast_chk.isChecked())
+        cb_clear_before = QtWidgets.QCheckBox('Clear cache before run')
+        cb_clear_before.setChecked(self.clear_cache_before_run)
+        lay.addRow(cb_dry)
+        lay.addRow(cb_tag)
+        lay.addRow(cb_fast)
+        lay.addRow(cb_clear_before)
+        btn_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.StandardButton.Ok | QtWidgets.QDialogButtonBox.StandardButton.Cancel)
+        lay.addRow(btn_box)
+        btn_box.accepted.connect(dlg.accept)
+        btn_box.rejected.connect(dlg.reject)
+        if dlg.exec() == QtWidgets.QDialog.DialogCode.Accepted:
+            self.dry_chk.setChecked(cb_dry.isChecked())
+            self.tag_chk.setChecked(cb_tag.isChecked())
+            self.fast_chk.setChecked(cb_fast.isChecked())
+            self.clear_cache_before_run = cb_clear_before.isChecked()
+            self.act_clear_before.setChecked(self.clear_cache_before_run)
+
+    def _toggle_clear_before(self, checked: bool) -> None:
+        self.clear_cache_before_run = bool(checked)
+
+    def _clear_cache_now(self) -> None:
+        ok = False
+        try:
+            ok = clear_memory(confirm=True)
+        except Exception:
+            ok = False
+        if ok:
+            self._log('Cache cleared. All files will be considered next run.')
+        else:
+            self._log('Cache was already clear or could not be cleared.')
+
     def _browse_src(self) -> None:
         path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Source')
         if path:
@@ -211,6 +327,15 @@ class MainWindow(QtWidgets.QMainWindow):
             return
         destp.mkdir(parents=True, exist_ok=True)
         ensure_base_structure(destp)
+
+        # Clear cache if requested via menu toggle
+        if self.clear_cache_before_run:
+            self._log('Clearing cache before run...')
+            try:
+                clear_memory(confirm=True)
+                self._log('Cache cleared.')
+            except Exception as e:
+                self._log(f'Warning: failed to clear cache: {e}')
 
         self.start_btn.setEnabled(False)
         self.stop_btn.setEnabled(True)
