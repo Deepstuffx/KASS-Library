@@ -1,7 +1,8 @@
 """Launcher script for the Sample Library Organizer GUI or CLI fallback.
 
-This launcher prefers the GUI but will fall back to the CLI if running on an
-older macOS where system Tk is known to crash, or if GUI startup fails.
+This launcher prefers the Qt GUI (if available) for a modern macOS look,
+falls back to Tk GUI on systems without PyQt, and finally to the CLI if GUI
+startup fails or is unsafe.
 """
 import os
 import sys
@@ -33,6 +34,46 @@ def _mac_compatible_for_tk() -> bool:
     return bool(os.environ.get('SAMPLE_ORGANIZER_FORCE_GUI'))
 
 
+def _can_import_pyqt(timeout: float = 5.0) -> bool:
+    """Probe PyQt6 (preferred) or PyQt5 import in a subprocess safely."""
+    try:
+        # Try PyQt6 first
+        cmd = [sys.executable, '-c', 'import PyQt6']
+        p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
+        if p.returncode == 0:
+            return True
+    except Exception:
+        pass
+    try:
+        # Fallback to PyQt5
+        cmd = [sys.executable, '-c', 'import PyQt5']
+        p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
+        return p.returncode == 0
+    except Exception:
+        return False
+
+
+def _launch_qt_gui_subprocess() -> bool:
+    """Try launching the Qt GUI in a subprocess. Returns True on success."""
+    try:
+        code = 'from kams_sorter.gui_qt import launch_qt_gui; launch_qt_gui()'
+        cmd = [sys.executable, '-c', code]
+        p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if p.stdout:
+            try:
+                print(p.stdout.decode('utf-8', errors='replace'))
+            except Exception:
+                print(p.stdout)
+        if p.returncode == 0:
+            return True
+        err = p.stderr.decode('utf-8', errors='replace') if p.stderr else ''
+        print('Qt GUI failed to start (subprocess). stderr:\n' + err, file=sys.stderr)
+        return False
+    except Exception as e:
+        print('Qt GUI failed to start:', e, file=sys.stderr)
+        return False
+
+
 def main():
     # By default prefer CLI to avoid triggering Tk crashes on mismatched macOS/Tk builds.
     # To force GUI (advanced users), set SAMPLE_ORGANIZER_FORCE_GUI=1 in the environment.
@@ -60,15 +101,17 @@ def main():
             return False
 
     if force_gui:
+        # Honor explicit GUI request; try Qt first, then Tk.
+        if _can_import_pyqt():
+            if _launch_qt_gui_subprocess():
+                return
+            else:
+                print('Qt GUI failed. Trying Tk GUI...', file=sys.stderr)
         # Probe tkinter safely before importing the GUI module into this process.
         if not _can_import_tk():
-            print('Environment requests GUI, but tkinter import failed (or would crash). Falling back to CLI.', file=sys.stderr)
+            print('Environment requests GUI, but GUI imports failed or are unsafe. Falling back to CLI.', file=sys.stderr)
         else:
             try:
-                # Launch the GUI in a separate subprocess to avoid importing
-                # Tk into this launcher process (which can cause native aborts
-                # on some macOS/Tk combinations). Capture and print stderr
-                # so the user can diagnose issues.
                 cmd = [sys.executable, '-c', 'from kams_sorter.gui import launch_gui; launch_gui()']
                 p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 if p.stdout:
@@ -79,7 +122,7 @@ def main():
                 if p.returncode == 0:
                     return
                 err = p.stderr.decode('utf-8', errors='replace') if p.stderr else ''
-                print('Forced GUI launch failed (subprocess). stderr:\n' + err, file=sys.stderr)
+                print('Forced Tk GUI launch failed (subprocess). stderr:\n' + err, file=sys.stderr)
             except Exception as e:
                 print('Forced GUI launch failed, falling back to CLI:', e, file=sys.stderr)
 
@@ -139,17 +182,22 @@ def main():
         print('\nSample Library Organizer Launcher')
         print('Press Ctrl+C at any time to quit.')
         print('Choose an action:')
-        print('  1) Launch GUI (if available)')
+        print('  1) Launch GUI (Qt if available, else Tk)')
         print('  2) Run interactive setup wizard')
         print('  3) Run CLI now (provide src/dest)')
         print('  q) Quit')
         choice = input('Select [1/2/3/q]: ').strip().lower()
         if choice == '1':
+            # Prefer Qt if present
+            if _can_import_pyqt():
+                if _launch_qt_gui_subprocess():
+                    return
+                else:
+                    print('Qt GUI failed. Trying Tk GUI...', file=sys.stderr)
             if not _can_import_tk():
-                print('tkinter appears unavailable or unsafe on this system. Cannot launch GUI.')
+                print('No usable GUI backend detected (PyQt/Tk).')
             else:
                 try:
-                    # spawn GUI in subprocess to avoid importing Tk into the launcher
                     cmd = [sys.executable, '-c', 'from kams_sorter.gui import launch_gui; launch_gui()']
                     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     if p.stdout:

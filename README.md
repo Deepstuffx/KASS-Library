@@ -5,7 +5,7 @@ This repository contains a small utility and GUI to organize audio sample packs 
 Features
 - Organize samples (WAV/AIFF/FLAC/MP3/OGG) into semantic folders (Drums, Bass, Synths, FX, Vocals, Loops, Presets, etc.)
 - Filename-based advanced keyword classification plus optional audio-feature based heuristics (librosa)
-- GUI with dry-run, tagging, recent folders, cache clearing
+- GUI (Qt on macOS/modern theme, Tk fallback) with dry-run, tagging, fast/deep toggle, cache clearing
 - CLI mode for batch imports
 - Memory of processed files to speed up repeated runs, with cache clear
 
@@ -21,9 +21,13 @@ pip install -r requirements.txt
 # brew install ffmpeg
 ```
 
-2. Run the GUI:
+2. Run the GUI (Qt preferred):
 
 ```bash
+# Qt (modern UI)
+python -c "from kams_sorter.gui_qt import launch_qt_gui; launch_qt_gui()"
+
+# Tk fallback (if PyQt is unavailable)
 python -c "from kams_sorter.gui import launch_gui; launch_gui()"
 ```
 
@@ -91,7 +95,7 @@ pyinstaller --onefile --windowed app.py
 ```
 
 Notes:
-- The project uses only Python stdlib (Tkinter for GUI). No extra requirements needed.
+- The Qt GUI requires `PyQt6` (preferred) or `PyQt5`. The Tk GUI has no extra dependency.
 - The tool keeps a state DB at `<dest>/.organizer_state.sqlite` to de-duplicate and resume runs.
 
 If you want I can:
