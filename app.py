@@ -75,7 +75,7 @@ def _launch_qt_gui_subprocess() -> bool:
 
 
 def main():
-    # By default prefer CLI to avoid triggering Tk crashes on mismatched macOS/Tk builds.
+    # Prefer launching the GUI by default when no args are provided.
     # To force GUI (advanced users), set SAMPLE_ORGANIZER_FORCE_GUI=1 in the environment.
     force_gui = bool(os.environ.get('SAMPLE_ORGANIZER_FORCE_GUI'))
     def _can_import_tk(timeout: float = 3.0) -> bool:
@@ -99,6 +99,27 @@ def main():
             return False
         except Exception:
             return False
+
+    # If no args, try GUI immediately (Qt preferred, then Tk). Only fall back if both fail.
+    if len(sys.argv) == 1 and not force_gui:
+        if _can_import_pyqt():
+            if _launch_qt_gui_subprocess():
+                return
+        if _can_import_tk():
+            try:
+                cmd = [sys.executable, '-c', 'from kams_sorter.gui import launch_gui; launch_gui()']
+                p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                if p.stdout:
+                    try:
+                        print(p.stdout.decode('utf-8', errors='replace'))
+                    except Exception:
+                        print(p.stdout)
+                if p.returncode == 0:
+                    return
+                err = p.stderr.decode('utf-8', errors='replace') if p.stderr else ''
+                print('Tk GUI failed to start (subprocess). stderr:\n' + err, file=sys.stderr)
+            except Exception as e:
+                print('Tk GUI failed to start:', e, file=sys.stderr)
 
     if force_gui:
         # Honor explicit GUI request; try Qt first, then Tk.
@@ -174,6 +195,7 @@ def main():
     signal.signal(signal.SIGINT, _handle_sigint)
 
     if len(sys.argv) == 1:
+        # As a fallback (if both GUIs failed), offer interactive options
         script_path = os.path.join(os.path.dirname(__file__), 'Core Script')
         if not os.path.exists(script_path):
             # fallback to cwd name
@@ -194,11 +216,11 @@ def main():
                     return
                 else:
                     print('Qt GUI failed. Trying Tk GUI...', file=sys.stderr)
-            if not _can_import_tk():
+            if not _can_import_tk() and not _can_import_pyqt():
                 print('No usable GUI backend detected (PyQt/Tk).')
             else:
                 try:
-                    cmd = [sys.executable, '-c', 'from kams_sorter.gui import launch_gui; launch_gui()']
+                    cmd = [sys.executable, '-c', 'from kams_sorter.gui_qt import launch_qt_gui; launch_qt_gui()'] if _can_import_pyqt() else [sys.executable, '-c', 'from kams_sorter.gui import launch_gui; launch_gui()']
                     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     if p.stdout:
                         try:
