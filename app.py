@@ -69,7 +69,7 @@ def main():
                 # Tk into this launcher process (which can cause native aborts
                 # on some macOS/Tk combinations). Capture and print stderr
                 # so the user can diagnose issues.
-                cmd = [sys.executable, '-c', 'from organizer.gui import launch_gui; launch_gui()']
+                cmd = [sys.executable, '-c', 'from kams_sorter.gui import launch_gui; launch_gui()']
                 p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 if p.stdout:
                     try:
@@ -150,7 +150,7 @@ def main():
             else:
                 try:
                     # spawn GUI in subprocess to avoid importing Tk into the launcher
-                    cmd = [sys.executable, '-c', 'from organizer.gui import launch_gui; launch_gui()']
+                    cmd = [sys.executable, '-c', 'from kams_sorter.gui import launch_gui; launch_gui()']
                     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     if p.stdout:
                         try:
@@ -264,7 +264,7 @@ def main():
             return
     # fallback: run CLI module
     try:
-        from organizer import cli
+        from kams_sorter import cli
         cli.main()
     except Exception as e:
         print('Failed to run CLI:', e, file=sys.stderr)

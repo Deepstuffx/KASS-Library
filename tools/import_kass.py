@@ -14,7 +14,7 @@ import subprocess
 from pathlib import Path
 from typing import List
 
-from organizer.core import classify_path, ensure_base_structure, iter_media
+from kams_sorter.core import classify_path, ensure_base_structure, iter_media
 
 
 def clone_repo(url: str, out: Path) -> Path:
@@ -48,10 +48,10 @@ def dry_run(src: Path, dest_root: Path, out_csv: Path | None = None) -> List[tup
 def perform_import(src: Path, dest_root: Path, dry: bool, tag: bool, workers: int):
     # Use the organizer CLI pipeline: create destination structure and call process via jobs
     ensure_base_structure(dest_root)
-    from organizer.cli import main as cli_main
+    from kams_sorter.cli import main as cli_main
     # The CLI is a small wrapper; rather than reusing it directly here we will call the module
     # programmatically by building jobs (to keep behavior explicit). Simpler: shell out to CLI for now.
-    cmd = ['python', '-m', 'organizer.cli', str(src), str(dest_root)]
+    cmd = ['python', '-m', 'kams_sorter.cli', str(src), str(dest_root)]
     if dry:
         cmd.append('--dry-run')
     if tag:

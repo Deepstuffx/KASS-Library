@@ -97,7 +97,7 @@ def launch_gui() -> None:
             self.src_var = tk.StringVar()
             # recent sources combobox
             try:
-                from organizer.core import load_memory
+                from kams_sorter.core import load_memory
                 mem = load_memory()
                 recent_srcs = mem.get('recent_srcs', [])
             except Exception:
@@ -208,7 +208,7 @@ def launch_gui() -> None:
 
         def clear_cache(self) -> None:
             import tkinter.messagebox as mb
-            from organizer.core import clear_memory
+            from kams_sorter.core import clear_memory
             if mb.askyesno('Clear Cache', 'Are you sure you want to clear the cache of processed files? This will force a full rescan next run.'):
                 ok = clear_memory(confirm=True)
                 if ok:
@@ -258,7 +258,7 @@ def launch_gui() -> None:
 
             # persist recent folders
             try:
-                from organizer.core import load_memory, add_recent_src, add_recent_dest, save_memory
+                from kams_sorter.core import load_memory, add_recent_src, add_recent_dest, save_memory
                 mem = load_memory()
                 add_recent_src(mem, str(srcp))
                 add_recent_dest(mem, str(destp))

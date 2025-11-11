@@ -16,10 +16,10 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Iterable
 
-from organizer.core import classify_path, iter_media
+from kams_sorter.core import classify_path, iter_media
 
 try:
-    from organizer.audio_features import analyze_and_classify
+    from kams_sorter.audio_features import analyze_and_classify
     AUDIO_AVAILABLE = True
 except Exception:
     AUDIO_AVAILABLE = False

@@ -24,13 +24,13 @@ pip install -r requirements.txt
 2. Run the GUI:
 
 ```bash
-python -c "from organizer.gui import launch_gui; launch_gui()"
+python -c "from kams_sorter.gui import launch_gui; launch_gui()"
 ```
 
 3. Or use the CLI for batch imports:
 
 ```bash
-python -m organizer.cli <source-folder> <dest-library> --dry-run
+python -m kams_sorter.cli <source-folder> <dest-library> --dry-run
 ```
 
 Importing an external pack repository (e.g. KASS-Library)
@@ -61,9 +61,9 @@ This project is provided as-is. When integrating third-party sample packs or cod
 This repository contains a small sample-organizer tool and a lightweight GUI.
 
 Files added:
-- `organizer/core.py` — core functionality (classification, hashing, DB, process).
-- `organizer/gui.py` — Tkinter GUI to choose source/destination and run organizer.
-- `organizer/cli.py` — small CLI wrapper to run programmatically.
+- `kams_sorter/core.py` — core functionality (classification, hashing, DB, process).
+- `kams_sorter/gui.py` — Tkinter GUI to choose source/destination and run organizer.
+- `kams_sorter/cli.py` — small CLI wrapper to run programmatically.
 - `app.py` — launcher for GUI.
 
 Quick start (run GUI):
@@ -75,7 +75,7 @@ python3 app.py
 Quick start (CLI):
 
 ```bash
-python3 -m organizer.cli /path/to/packs /path/to/library --dry-run
+python3 -m kams_sorter.cli /path/to/packs /path/to/library --dry-run
 ```
 
 Packaging as a native executable (example using pyinstaller):
