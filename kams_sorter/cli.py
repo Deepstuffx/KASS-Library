@@ -12,6 +12,7 @@ def main():
     ap.add_argument('dest')
     ap.add_argument('--dry-run', action='store_true')
     ap.add_argument('--tag-source', action='store_true')
+    ap.add_argument('--deep', action='store_true', help='Enable deep audio feature analysis (slower)')
     ap.add_argument('--workers', type=int, default=4)
     args = ap.parse_args()
     src = Path(args.src).expanduser().resolve()
@@ -32,7 +33,7 @@ def main():
         jobs.append(Job(src=f, rel_pack=rel_pack))
     success=skipped=failed=0
     with ThreadPoolExecutor(max_workers=max(1,min(args.workers,8))) as ex:
-        futs = {ex.submit(process,j,dest,db,args.dry_run,args.tag_source): j for j in jobs}
+        futs = {ex.submit(process,j,dest,db,args.dry_run,args.tag_source, deep=args.deep): j for j in jobs}
         for fut in as_completed(futs):
             ok,msg = fut.result()
             if ok:

@@ -433,7 +433,7 @@ def iter_media(root: Path) -> Iterable[Path]:
                     yield p
 
 
-def process(job: Job, dest_root: Path, db: DB, dry: bool, tag_source: bool, log_cb: LogCb = None) -> Tuple[bool,str]:
+def process(job: Job, dest_root: Path, db: DB, dry: bool, tag_source: bool, log_cb: LogCb = None, *, deep: bool = False) -> Tuple[bool,str]:
     # Load and update memory for last used folders and processed files
     mem = load_memory()
     mem['last_src'] = str(job.src.parent)
@@ -472,6 +472,24 @@ def process(job: Job, dest_root: Path, db: DB, dry: bool, tag_source: bool, log_
         save_memory(mem)
         return True, f'skip duplicate: {src.name}'
     target_dir = classify_path(src, dest_root)
+    # Optional deep audio analysis override
+    if deep and src.suffix.lower() in {'.wav','.aif','.aiff','.flac','.mp3','.ogg'}:
+        try:
+            from .audio_features import analyze_and_classify
+            grp, features = analyze_and_classify(src)
+            # Override certain groups
+            if grp == 'Acapella':
+                target_dir = dest_root / '05 Vocals/Acapellas'
+            elif grp == 'Breakbeat Loop':
+                target_dir = dest_root / '06 Loops & Grooves/Breakbeats/Unsorted BPM'
+            elif grp == 'Loop':
+                # Fall back to All Styles/Unsorted BPM for generic loops
+                target_dir = dest_root / '06 Loops & Grooves/All Styles/Unsorted BPM'
+            elif grp == 'Vocal':
+                target_dir = dest_root / '05 Vocals/Vocal One Shots'
+        except Exception:
+            # Ignore deep errors and keep filename-based classification
+            pass
     target_dir.mkdir(parents=True, exist_ok=True)
     dst_name = src.name
     if tag_source and job.rel_pack:

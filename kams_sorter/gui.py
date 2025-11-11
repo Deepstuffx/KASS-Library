@@ -124,7 +124,7 @@ def launch_gui() -> None:
             ttk.Checkbutton(left, text='Tag source pack name', variable=self.tag_var).grid(column=0, row=8, sticky='w')
             # Fast mode: skip expensive audio analysis (if integrated)
             self.fast_var = tk.BooleanVar(value=True)
-            ttk.Checkbutton(left, text='Fast mode (skip audio analysis)', variable=self.fast_var).grid(column=0, row=9, sticky='w', pady=(4,0))
+            ttk.Checkbutton(left, text='Fast mode (skip deep analysis)', variable=self.fast_var).grid(column=0, row=9, sticky='w', pady=(4,0))
 
 
             # Buttons (use grid so buttons remain reachable when resizing)
@@ -276,7 +276,7 @@ def launch_gui() -> None:
         def request_stop(self) -> None:
             self.stop_requested = True
             self.log_message('Stop requested — waiting for current operations to finish...')
-
+        
         def _run(self, srcp: Path, destp: Path, dry: bool, tag: bool, fast: bool) -> None:
             db_path = destp / '.organizer_state.sqlite'
             db = DB(db_path)
@@ -297,7 +297,7 @@ def launch_gui() -> None:
 
                 max_workers = max(1, min(4, os.cpu_count() or 4))
                 with ThreadPoolExecutor(max_workers=max_workers) as ex:
-                    futs = {ex.submit(process, j, destp, db, dry, tag, self.log_message): j for j in jobs}
+                    futs = {ex.submit(process, j, destp, db, dry, tag, self.log_message, deep=(not fast)): j for j in jobs}
                     for fut in as_completed(futs):
                         try:
                             ok, msg = fut.result()

@@ -27,10 +27,14 @@ pip install -r requirements.txt
 python -c "from kams_sorter.gui import launch_gui; launch_gui()"
 ```
 
-3. Or use the CLI for batch imports:
+3. Or use the CLI for batch imports (toggle deep analysis with --deep for more accurate but slower classification):
 
 ```bash
+# Fast (filename-only)
 python -m kams_sorter.cli <source-folder> <dest-library> --dry-run
+
+# Deep (audio analysis overrides)
+python -m kams_sorter.cli <source-folder> <dest-library> --deep --dry-run
 ```
 
 Importing an external pack repository (e.g. KASS-Library)

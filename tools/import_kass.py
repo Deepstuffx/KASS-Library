@@ -45,7 +45,7 @@ def dry_run(src: Path, dest_root: Path, out_csv: Path | None = None) -> List[tup
     return rows
 
 
-def perform_import(src: Path, dest_root: Path, dry: bool, tag: bool, workers: int):
+def perform_import(src: Path, dest_root: Path, dry: bool, tag: bool, workers: int, *, deep: bool = False):
     # Use the organizer CLI pipeline: create destination structure and call process via jobs
     ensure_base_structure(dest_root)
     from kams_sorter.cli import main as cli_main
@@ -58,6 +58,8 @@ def perform_import(src: Path, dest_root: Path, dry: bool, tag: bool, workers: in
         cmd.append('--tag-source')
     if workers:
         cmd += ['--workers', str(workers)]
+    if deep:
+        cmd.append('--deep')
     print('Running:', ' '.join(cmd))
     subprocess.check_call(cmd)
 
@@ -71,6 +73,7 @@ def main():
     ap.add_argument('--out-csv', help='Write dry-run mapping to CSV')
     ap.add_argument('--tag-source', action='store_true')
     ap.add_argument('--workers', type=int, default=4)
+    ap.add_argument('--deep', action='store_true', help='Enable deep audio analysis during import')
     args = ap.parse_args()
 
     base = Path.cwd()
@@ -90,7 +93,7 @@ def main():
             print(s,'->',d)
         print(f'... total {len(rows)} items')
     else:
-        perform_import(src, dest, args.dry_run, args.tag_source, args.workers)
+        perform_import(src, dest, args.dry_run, args.tag_source, args.workers, deep=args.deep)
 
 
 if __name__ == '__main__':
