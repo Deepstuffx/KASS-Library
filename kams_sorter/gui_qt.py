@@ -30,6 +30,13 @@ except Exception:  # pragma: no cover - fallback
         QtCore = QtGui = QtWidgets = _Stub()  # type: ignore
         PYQT_VERSION = 0
 
+# QAction compatibility across PyQt5/6
+if PYQT_VERSION == 6:
+    QAction = QtGui.QAction  # type: ignore[attr-defined]
+else:
+    # PyQt5 provides QAction on QtWidgets
+    QAction = QtWidgets.QAction  # type: ignore[attr-defined]
+
 
 def _apply_apple_dark_palette(app) -> None:
     # Use Fusion style for a consistent baseline across platforms
@@ -196,21 +203,22 @@ class MainWindow(QtWidgets.QMainWindow):
         mb = self.menuBar()
         # Application menu (on macOS, this appears under the app name)
         app_menu = mb.addMenu('&Application')
-        act_prefs = QtWidgets.QAction('Preferences…', self)
+        act_prefs = QAction('Preferences…', self)
         try:
             act_prefs.setShortcut(QtGui.QKeySequence.StandardKey.Preferences)
         except Exception:
             act_prefs.setShortcut('Ctrl+,')
         act_prefs.triggered.connect(self._open_prefs)
 
-        self.act_clear_before = QtWidgets.QAction('Clear cache before run', self, checkable=True)
+        self.act_clear_before = QAction('Clear cache before run', self)
+        self.act_clear_before.setCheckable(True)
         self.act_clear_before.toggled.connect(self._toggle_clear_before)
 
-        act_clear_now = QtWidgets.QAction('Clear Cache Now…', self)
+        act_clear_now = QAction('Clear Cache Now…', self)
         act_clear_now.setShortcut('Ctrl+Shift+Backspace')
         act_clear_now.triggered.connect(self._clear_cache_now)
 
-        act_quit = QtWidgets.QAction('Quit', self)
+        act_quit = QAction('Quit', self)
         try:
             act_quit.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         except Exception:
@@ -226,10 +234,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # File menu
         file_menu = mb.addMenu('&File')
-        act_start = QtWidgets.QAction('Start', self)
+        act_start = QAction('Start', self)
         act_start.setShortcut('Ctrl+R')
         act_start.triggered.connect(self._start)
-        act_stop = QtWidgets.QAction('Stop', self)
+        act_stop = QAction('Stop', self)
         act_stop.setShortcut('Ctrl+S')
         act_stop.triggered.connect(self._stop)
         file_menu.addAction(act_start)
@@ -237,17 +245,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # View/Options menu
         view_menu = mb.addMenu('&Options')
-        self.act_opt_dry = QtWidgets.QAction('Dry run (no files copied)', self, checkable=True)
+        self.act_opt_dry = QAction('Dry run (no files copied)', self)
+        self.act_opt_dry.setCheckable(True)
         self.act_opt_dry.setChecked(True)
         self.act_opt_dry.toggled.connect(self.dry_chk.setChecked)
         self.dry_chk.toggled.connect(self.act_opt_dry.setChecked)
 
-        self.act_opt_tag = QtWidgets.QAction('Tag source pack name', self, checkable=True)
+        self.act_opt_tag = QAction('Tag source pack name', self)
+        self.act_opt_tag.setCheckable(True)
         self.act_opt_tag.setChecked(False)
         self.act_opt_tag.toggled.connect(self.tag_chk.setChecked)
         self.tag_chk.toggled.connect(self.act_opt_tag.setChecked)
 
-        self.act_opt_fast = QtWidgets.QAction('Fast mode (skip deep analysis)', self, checkable=True)
+        self.act_opt_fast = QAction('Fast mode (skip deep analysis)', self)
+        self.act_opt_fast.setCheckable(True)
         self.act_opt_fast.setChecked(True)
         self.act_opt_fast.toggled.connect(self.fast_chk.setChecked)
         self.fast_chk.toggled.connect(self.act_opt_fast.setChecked)
@@ -258,9 +269,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Help menu
         help_menu = mb.addMenu('&Help')
-        act_about = QtWidgets.QAction('About', self)
+        act_about = QAction('About', self)
         act_about.triggered.connect(self._show_about)
         help_menu.addAction(act_about)
+
+    def _show_about(self) -> None:
+        QtWidgets.QMessageBox.information(self, 'About', 'Kams Auto Sample Sorter\nQt GUI — modern macOS look\nFast vs Deep analysis, dry-run, tagging, and cache controls.')
 
     def _open_prefs(self) -> None:
         # Simple preferences dialog to mirror options
