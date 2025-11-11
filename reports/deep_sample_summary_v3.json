@@ -1,0 +1,69 @@
+{
+  "total_files": 400,
+  "total_size_bytes": 333878092,
+  "by_extension": {
+    ".wav": 400
+  },
+  "by_predicted_dest": {
+    "/Users/camerondixon/Music/OrganizedLibrary/07 One Shots": 350,
+    "/Users/camerondixon/Music/OrganizedLibrary/04 FX": 21,
+    "/Users/camerondixon/Music/OrganizedLibrary/01 Drums/Percussion/Misc Perc": 11,
+    "/Users/camerondixon/Music/OrganizedLibrary/06 Loops & Grooves/Breakbeats/Unsorted BPM": 6,
+    "/Users/camerondixon/Music/OrganizedLibrary/05 Vocals/Vocal One Shots": 4,
+    "/Users/camerondixon/Music/OrganizedLibrary/01 Drums/Hats/Shakers": 1,
+    "/Users/camerondixon/Music/OrganizedLibrary/08 MIDI & Presets/Generic/Presets": 1,
+    "/Users/camerondixon/Music/OrganizedLibrary/02 Bass": 1,
+    "/Users/camerondixon/Music/OrganizedLibrary/03 Synths & Leads": 1,
+    "/Users/camerondixon/Music/OrganizedLibrary/01 Drums/Kicks": 2,
+    "/Users/camerondixon/Music/OrganizedLibrary/06 Loops & Grooves/All Styles/Unsorted BPM": 1,
+    "/Users/camerondixon/Music/OrganizedLibrary/10 Meme & Fun Sounds": 1
+  },
+  "largest": [
+    {
+      "size": 21305458,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/capa.wav"
+    },
+    {
+      "size": 9784470,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/Lil Corb - B2 Killaz From Da Northside_3.wav"
+    },
+    {
+      "size": 7982910,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/Lil Corb - B2 Killaz From Da Northside_2.wav"
+    },
+    {
+      "size": 7292426,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/Fat Pat Skit.wav"
+    },
+    {
+      "size": 7011230,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/Fat Pat - knock em off ya game talking.wav"
+    },
+    {
+      "size": 2880854,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/2 Nes - anotha victim.wav"
+    },
+    {
+      "size": 2422530,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/DJ Big Mac - Pistol Packin murdera mane.wav"
+    },
+    {
+      "size": 2349386,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/Bun B - trill ass nigga.wav"
+    },
+    {
+      "size": 2313066,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/4 Deep sample.wav"
+    },
+    {
+      "size": 1963170,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/Lil Corb - B2 Killaz From Da Northside.wav"
+    }
+  ],
+  "top_folders": [
+    {
+      "folder": "Memphis Acapellas",
+      "count": 400
+    }
+  ]
+}

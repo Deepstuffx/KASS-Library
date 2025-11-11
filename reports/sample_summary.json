@@ -1,0 +1,108 @@
+{
+  "total_files": 1000,
+  "total_size_bytes": 1295263370,
+  "by_extension": {
+    ".wav": 1000
+  },
+  "by_predicted_dest": {
+    "/Users/camerondixon/Music/OrganizedLibrary/07 One Shots": 753,
+    "/Users/camerondixon/Music/OrganizedLibrary/04 FX": 22,
+    "/Users/camerondixon/Music/OrganizedLibrary/01 Drums/Percussion/Misc Perc": 12,
+    "/Users/camerondixon/Music/OrganizedLibrary/05 Vocals/Vocal One Shots": 6,
+    "/Users/camerondixon/Music/OrganizedLibrary/01 Drums/Hats/Shakers": 1,
+    "/Users/camerondixon/Music/OrganizedLibrary/08 MIDI & Presets/Generic/Presets": 1,
+    "/Users/camerondixon/Music/OrganizedLibrary/02 Bass": 1,
+    "/Users/camerondixon/Music/OrganizedLibrary/03 Synths & Leads": 1,
+    "/Users/camerondixon/Music/OrganizedLibrary/01 Drums/Kicks": 2,
+    "/Users/camerondixon/Music/OrganizedLibrary/06 Loops & Grooves/All Styles/Unsorted BPM": 93,
+    "/Users/camerondixon/Music/OrganizedLibrary/10 Meme & Fun Sounds": 2,
+    "/Users/camerondixon/Music/OrganizedLibrary/06 Loops & Grooves/All Styles/170+ BPM": 47,
+    "/Users/camerondixon/Music/OrganizedLibrary/06 Loops & Grooves/All Styles/120\u2013130 BPM": 46,
+    "/Users/camerondixon/Music/OrganizedLibrary/06 Loops & Grooves/All Styles/140\u2013150 BPM": 11,
+    "/Users/camerondixon/Music/OrganizedLibrary/06 Loops & Grooves/Techno/Unsorted BPM": 2
+  },
+  "largest": [
+    {
+      "size": 21305458,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/capa.wav"
+    },
+    {
+      "size": 9784470,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/Lil Corb - B2 Killaz From Da Northside_3.wav"
+    },
+    {
+      "size": 7982910,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/Lil Corb - B2 Killaz From Da Northside_2.wav"
+    },
+    {
+      "size": 7292426,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/Fat Pat Skit.wav"
+    },
+    {
+      "size": 7011230,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Memphis Acapellas/Fat Pat - knock em off ya game talking.wav"
+    },
+    {
+      "size": 5352232,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Rhythm Lab The Ultimate Amen Breaks Pack/Rhythm Lab The Ultimate Amen Breaks Pack/Original/Amen Break Vinyl - by Reddit user HlCKELPICKLE .wav"
+    },
+    {
+      "size": 4233644,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Rhythm Lab The Ultimate Amen Breaks Pack/Rhythm Lab The Ultimate Amen Breaks Pack/Roland VP9000/STRETCH/Amen VP9000 Stretch 060 BPM.wav"
+    },
+    {
+      "size": 4230056,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Rhythm Lab The Ultimate Amen Breaks Pack/Rhythm Lab The Ultimate Amen Breaks Pack/Fanu/parts TS amen-2000xl-quietererer-SOFTEN.wav"
+    },
+    {
+      "size": 3910808,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Rhythm Lab The Ultimate Amen Breaks Pack/Rhythm Lab The Ultimate Amen Breaks Pack/Original/Amen Break Vinyl - by Cyberworm 33.wav"
+    },
+    {
+      "size": 3853682,
+      "path": "/Volumes/My Mac/Ableton/Sample Folders/Rhythm Lab The Ultimate Amen Breaks Pack/Rhythm Lab The Ultimate Amen Breaks Pack/AKAI MPC1000/Stretch/Amen02 MPC1000 Stretch Slower.wav"
+    }
+  ],
+  "top_folders": [
+    {
+      "folder": "Memphis Acapellas",
+      "count": 448
+    },
+    {
+      "folder": "FX",
+      "count": 122
+    },
+    {
+      "folder": "Remixed",
+      "count": 59
+    },
+    {
+      "folder": "Pitchshift",
+      "count": 48
+    },
+    {
+      "folder": "Bit Grunger",
+      "count": 48
+    },
+    {
+      "folder": "Time Stretch",
+      "count": 43
+    },
+    {
+      "folder": "Fanu",
+      "count": 42
+    },
+    {
+      "folder": "Stretch",
+      "count": 41
+    },
+    {
+      "folder": "STRETCH",
+      "count": 38
+    },
+    {
+      "folder": "PITCH",
+      "count": 25
+    }
+  ]
+}
