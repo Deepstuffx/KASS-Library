@@ -375,6 +375,28 @@ def launch_gui() -> None:
                 pass
 
     root = tk.Tk()
+    # Optional scaling for high-DPI: SAMPLE_ORGANIZER_SCALE env var (0.5 - 3.0)
+    try:
+        scale_env = os.environ.get('SAMPLE_ORGANIZER_SCALE')
+        if scale_env:
+            s = float(scale_env)
+            if 0.5 <= s <= 3.0:
+                # Tk scaling affects text/geometry; separate scaling for fonts if needed.
+                try:
+                    root.tk.call('tk', 'scaling', s)
+                except Exception:
+                    pass
+                try:
+                    import tkinter.font as tkfont
+                    default_font = tkfont.nametofont('TkDefaultFont')
+                    default_font.configure(size=int(default_font.cget('size') * s))
+                    text_font = tkfont.nametofont('TkTextFont') if 'TkTextFont' in tkfont.names() else None
+                    if text_font:
+                        text_font.configure(size=int(text_font.cget('size') * s))
+                except Exception:
+                    pass
+    except Exception:
+        pass
     root.title('Sample Library Organizer')
     try:
         # set a sensible minimum size so controls (log, buttons) are not hidden

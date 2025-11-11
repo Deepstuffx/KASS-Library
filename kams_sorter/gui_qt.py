@@ -392,7 +392,36 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 def launch_qt_gui() -> None:
+    # Enable high-DPI scaling and use device pixel ratio for crisp rendering on Retina / 4K.
+    try:
+        QtWidgets.QApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
+        QtWidgets.QApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_UseHighDpiPixmaps, True)
+    except Exception:
+        pass
     app = QtWidgets.QApplication(sys.argv)
+    # Dynamic scale factor (user-adjustable via env SAMPLE_ORGANIZER_SCALE or defaults).
+    scale_env = os.environ.get('SAMPLE_ORGANIZER_SCALE')
+    scale: float = 1.0
+    try:
+        if scale_env:
+            scale = max(0.5, min(3.0, float(scale_env)))
+    except Exception:
+        scale = 1.0
+    if scale != 1.0:
+        # Apply font scaling: iterate over default font and set point size multiplier.
+        default_font = app.font()
+        try:
+            new_size = int(default_font.pointSize() * scale)
+            if new_size > 0:
+                default_font.setPointSize(new_size)
+                app.setFont(default_font)
+        except Exception:
+            pass
+        # Optionally increase base window and layout metrics.
+        try:
+            app.setStyleSheet(f"QWidget {{ font-size: {int(12*scale)}pt; }}")
+        except Exception:
+            pass
     # macOS: use dark palette by default
     try:
         if platform.system() == 'Darwin':
@@ -400,5 +429,12 @@ def launch_qt_gui() -> None:
     except Exception:
         pass
     w = MainWindow()
+    # Scale initial window size appropriately
+    if scale != 1.0:
+        try:
+            base_w, base_h = 840, 560
+            w.resize(int(base_w*scale), int(base_h*scale))
+        except Exception:
+            pass
     w.show()
     sys.exit(app.exec())
