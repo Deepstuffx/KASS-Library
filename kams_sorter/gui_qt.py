@@ -170,9 +170,17 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addWidget(self.tag_chk, 5, 0, 1, 2)
         layout.addWidget(self.fast_chk, 6, 0, 1, 2)
 
-    # Buttons
+        # Buttons
         self.start_btn = QtWidgets.QPushButton('Start')
         self.stop_btn = QtWidgets.QPushButton('Stop')
+        # Compact button sizing
+        for b in (self.start_btn, self.stop_btn):
+            try:
+                b.setMinimumHeight(26)
+                b.setMaximumHeight(28)
+                b.setStyleSheet("QPushButton { padding: 2px 10px; font-size: 11pt; }")
+            except Exception:
+                pass
         self.stop_btn.setEnabled(False)
         self.start_btn.clicked.connect(self._start)
         self.stop_btn.clicked.connect(self._stop)
