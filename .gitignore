@@ -1,0 +1,37 @@
+# macOS & editor
+.DS_Store
+.vscode/
+
+# Python
+.venv/
+.venv*/
+__pycache__/
+.pytest_cache/
+
+# Node/Vite
+app/frontend/node_modules/
+app/frontend/dist/
+
+# Rust/Tauri build output
+app/desktop/target/
+
+# Local data & temp
+tmp/
+sandbox/reports/
+
+# Large sample sources (keep out of git; use LFS only for curated assets)
+sandbox/src_samples/
+sandbox/OrganizedLibraryDemo/
+
+# Misc caches
+**/.cache/
+.DS_Store
+.vscode/
+.venv*/
+__pycache__/
+.pytest_cache/
+tmp/
+sandbox/reports/
+app/frontend/node_modules/
+app/frontend/dist/
+app/desktop/target/

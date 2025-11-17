@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+librosa
+numpy
+scipy
+soundfile
+audioread
+rapidfuzz
+pydantic
