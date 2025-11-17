@@ -1,3 +1,4 @@
+```markdown
 Phase 4 — Autotagging, UX & Release Candidate
 
 Goal
@@ -28,3 +29,5 @@ Immediate next steps I will take if you confirm:
 - Implement a baseline rule-based autotagging function under `app/backend/autotag.py` and add a DB cache table. Then run the tagderivation pass on `sandbox/OrganizedLibraryDemo` in dry-run and report summary counts.
 
 Tell me to "start autotag prototype" to begin implementing the baseline and running a dry-run, or tell me which other Phase 4 task you want first.
+
+```

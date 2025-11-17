@@ -1,105 +1,208 @@
-# KASS Lab Workspace
+ ____  __.  _____    _________ _________ .____       _____ __________ 
+|    |/ _| /  _  \  /   _____//   _____/ |    |     /  _  \\______   \
+|      <  /  /_\  \ \_____  \ \_____  \  |    |    /  /_\  \|    |  _/
+|    |  \/    |    \/        \/        \ |    |___/    |    \    |   \
+|____|__ \____|__  /_______  /_______  / |_______ \____|__  /______  /
+	\/       \/        \/        \/          \/       \/       \/ 
 
-This repo contains a multi-app setup:
+# KASS Lab - Ecosystem Overview
 
-- `app/backend` — FastAPI backend (Python)
-- `app/frontend` — React + Vite + Tailwind (Node)
-- `app/desktop` — Tauri desktop shell (Rust)
-- `sandbox/` — test data and scripts
-- `scripts/` — helper scripts
+## KASS Library
+Intelligent Audio Sample Sorting System (KASS)
 
-## Prereqs (macOS)
+KASS Library takes messy sample packs from any source and transforms them into a clean, structured, DAW-ready sample library folder.
 
-- Python 3.10+ (found)
-- Node.js + npm (install via Homebrew)
-- Rust toolchain (cargo, rustc) (install via Homebrew / rustup)
-- Tauri CLI (after Node + Rust)
+All analysis, classification, DSP, ML, UI, and database logic exist only to generate that final export folder. The folder is the product.
 
-### Install Node & Rust
+---
 
-```zsh
-brew install node
-brew install rustup-init && rustup-init -y
-# restart terminal to load cargo
-cargo install create-tauri-app tauri-cli
+## 1. Project Overview
+
+KASS Library:
+- Ingests large sample packs or directories
+- Analyzes each sample (BPM, Key, Type, Loop/One-Shot, Spectral Info)
+- Applies user-defined rules to determine placement
+- Exports a polished, permanent sample library
+
+The exported "KASS Library Folder" is intended to be your long-term, professionally organized sample database.
+
+---
+
+## 2. Primary Purpose
+
+KASS Library is NOT:
+- a DAW
+- a sampler
+- a Splice replacement
+
+KASS Library IS:
+- a preprocessing tool
+- an organizational engine
+- a rules-driven folder builder
+- a sample librarian for producers
+
+---
+
+## 3. Features (Current & Planned)
+
+### Current Capabilities
+- Multi-pack scanning
+- BPM + Key detection
+- Loop vs One-Shot identification
+- Instrument detection (kick, snare, perc, 808, etc.)
+- FX classification
+- Loudness & brightness analysis
+- Rule-based export system (IF / THEN)
+- Dry-run preview and undo
+- SQLite internal metadata storage
+
+### Planned Additions
+- Splice folder auto-detection & ingestion
+- KASS Folder Manager (templates + health checks)
+- MAKID/Splice style GUI (waveform, table, filters, animations)
+- Synth preset sorting (Serum, Massive, Vital, Diva, Sylenth)
+- ML Similar Sound search and vibe tagging
+- Export folder templates (EDM / Lo-Fi / Trap / Cinematic / Ableton)
+
+---
+
+## 4. Architecture Overview
+
+```
+[ FRONTEND (React UI) ]
+- Table Browser
+- Waveform Player
+- Rule Builder
+- Export Manager
+	  |  (IPC)
+[ TAURI (Rust Shell) ]
+- Launches backend
+- File dialogs
+- OS permissions
+	  |  (HTTP/IPC)
+[ BACKEND (KASS Engine) ]
+- Scanner & Parser
+- DSP + ML Analysis
+- Rule Engine
+- Export Executor
+- SQLite (internal)
+	  |
+[ FINAL EXPORT (KASS Folder) ]
+- Clean DAW-ready folders
 ```
 
-## Backend
+---
 
-Install Python dependencies and run the API:
+## 5. Project Structure
 
-```zsh
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r app/backend/requirements.txt
-uvicorn app.backend.main:app --reload --port 8000
+```
+KASS-Lab/
+|-- app/
+|   |-- backend/     (KASS Engine: DSP, ML, Rules, Export)
+|   |-- frontend/    (React UI)
+|   |-- desktop/     (Tauri Shell)
+|   |-- sandbox/     (Testing environment)
+|   `-- scripts/     (Dev tools)
+`-- docs/           (Architecture, Rules, API, Specs)
 ```
 
-Open: http://127.0.0.1:8000/health
+---
 
-## Desktop (Tauri) Phase Zero
+## 6. Database Purpose
 
-Tauri desktop scaffold lives in `app/desktop` and points to the Vite dev server during development.
+The SQLite database is temporary and internal. It stores:
+- Analysis results
+- Classification metadata
+- Rule evaluations
+- Export plans
+- Undo history
 
-Dev config (`tauri.conf.json`):
-- `devPath`: `http://localhost:5173`
-- `distDir`: `../frontend/dist`
+Users never interact with it directly. It is disposable.
 
-Run all (backend + frontend + desktop) with one command:
+---
 
-```zsh
-./scripts/dev_all.sh
-```
+## 7. KASS Sandbox Environment
 
-Or manually:
-```zsh
-# Terminal 1 (backend)
-./scripts/dev_backend.sh
-# Terminal 2 (frontend)
-cd app/frontend && npm run dev
-# Terminal 3 (desktop)
-cd app/desktop && cargo tauri dev
-```
+Sandbox includes:
+- Fake packs (clean + messy)
+- Fake Splice folder
+- Synth preset test libraries
+- Benchmark scripts
+- Regression tests
 
-## Frontend (to be scaffolded)
+Used for:
+- DSP accuracy
+- Rule conflict testing
+- Export validation
+- Performance benchmarking
 
-After Node is installed:
+---
 
-```zsh
-cd app/frontend
-npm create vite@latest . -- --template react-ts
-npm install
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-npm install @tanstack/react-table wavesurfer.js
-npm run dev
-```
+## 8. Development Roadmap (Summary)
 
-Quick Tailwind setup:
-- Add `content: ["./index.html", "./src/**/*.{ts,tsx}"]` to `tailwind.config.js`
-- Add `@tailwind base; @tailwind components; @tailwind utilities;` to `src/index.css`
+0. Framework Setup  
+1. Scanner + Parser  
+2. DSP Analysis Pipeline  
+3. Rule Engine + Export System  
+4. GUI Alpha  
+5. Splice Integration  
+6. KASS Folder Manager  
+7. Synth Preset Sorting  
+8. ML Enhancements  
+9. Polish + Release  
 
-## Desktop (Tauri)
+---
 
-After Node + Rust + Tauri CLI:
+## 9. Technology Summary
 
-```zsh
-cd app/desktop
-npm create tauri-app@latest .
-# choose TypeScript, Vanilla or React as preferred
-npm run tauri dev
-```
+- Backend: Python, FastAPI, Essentia, Librosa, Aubio, RapidFuzz
+- Frontend: React, TailwindCSS, TanStack Table, Wavesurfer.js
+- Desktop: Tauri (Rust)
 
-## Sandbox
+---
 
-See `sandbox/README.md` for placeholder test pack layout.
+## 10. Strategic Design Principles (Key Considerations Summary)
 
-## Notes on DSP libs
+### Architecture
+- Backend decoupled from UI
+- DSP/ML precomputed, not real-time
+- Multiprocessing for large packs
 
-- `essentia` and `aubio` may require native builds. Preferred:
+### UX
+- Simple interface
+- Automatic & advanced modes
+- Dry-run + Undo required
+- Clear rule priority
 
-```zsh
-# Option A: Homebrew system libs
-brew install aubio
-# Essentia often needs conda or manual build; consider using Librosa features first
-```
+### Performance
+- Downsampled waveforms
+- Incremental scanning
+- Skip BPM/key on tiny one-shots
+
+### DSP/ML
+- Confidence thresholds
+- Embedding versioning
+- ML optional
+
+### Rules
+- Human-readable IF/THEN
+- Conflict detection
+- Reorderable
+
+### Export
+- The folder IS the product
+- Never overwrite silently
+- Customizable templates
+
+### Splice
+- Auto-detect
+- Incremental updates
+- Duplicate-safe
+
+### Synth Presets
+- Modular parsers
+- Unified export structure
+
+---
+
+End of file.

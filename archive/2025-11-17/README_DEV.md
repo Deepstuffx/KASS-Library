@@ -1,3 +1,4 @@
+````markdown
 Developer quickstart
 
 Recommended venvs
@@ -33,3 +34,5 @@ rm -rf .venv
 Troubleshooting
 - If VS Code shows stale diagnostics in Problems, reload the window (Command Palette → Developer: Reload Window) or restart the Python/Pylance language server.
 - Use `./scripts/run-backend.sh` to ensure uvicorn runs with the correct Python interpreter.
+
+````

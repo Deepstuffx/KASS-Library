@@ -1,3 +1,4 @@
+```markdown
 # KASS Lab — Detailed Development Phase Structure (KASS System)
 
 This document outlines each major development phase required to build:
@@ -180,3 +181,5 @@ This document outlines each major development phase required to build:
 ---
 
 End of file.
+
+```
