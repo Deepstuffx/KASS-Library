@@ -22,7 +22,7 @@ KASS Library:
 - Ingests large sample packs or directories
 - Analyzes each sample (BPM, Key, Type, Loop/One-Shot, Spectral Info)
 - Applies user-defined rules to determine placement
-- Exports a polished, permanent sample library
+- Exports a polished and modifiable sorted sample library
 
 The exported "KASS Library Folder" is intended to be your long-term, professionally organized sample database.
 
